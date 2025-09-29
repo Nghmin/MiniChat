@@ -1,0 +1,890 @@
+
+
+
+// .userInfo {
+//   height: 100px; // hoặc auto nếu nội dung có thể thay đổi
+//   border-bottom: 1px solid #ddd;
+//   padding: 12px 16px;
+//   background: white;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 12px;
+//   flex-shrink: 0; // giữ chiều cao cố định, không co lại khi parent co
+// }
+
+// .searchBar {
+//   display: flex;
+//   align-items: center;
+//   gap: 12px;
+// }
+
+// .searchInputWrapper {
+//   flex: 1;
+//   display: flex;
+//   align-items: center;
+//   background: #f8f9fa;
+//   border-radius: 20px;
+//   padding: 0 12px;
+//   height: 36px;
+//   transition: background 0.2s;
+// }
+
+// .searchIcon {
+//   margin-right: 8px;
+//   display: flex;
+//   align-items: center;
+// }
+
+// .searchInput {
+//   flex: 1;
+//   border: none;
+//   outline: none;
+//   background: transparent;
+//   font-size: 14px;
+//   color: #333;
+
+//   &::placeholder {
+//     color: #999;
+//   }
+// }
+
+// .actionButtons {
+//   display: flex;
+//   gap: 8px;
+// }
+
+// .actionBtn {
+//   width: 36px;
+//   height: 36px;
+//   border: none;
+//   background: #f8f9fa;
+//   border-radius: 50%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   transition: background-color 0.2s;
+
+//   &:hover {
+//     background: #e9ecef;
+//   }
+// }
+
+// .tabs {
+//   display: flex;
+//   align-items: center;
+//   justify-content: flex-start;
+// }
+
+// .tab {
+//   background: none;
+//   border: none;
+//   padding: 6px 0;
+//   margin-right: 24px;
+//   font-size: 14px;
+//   color: #666;
+//   cursor: pointer;
+//   position: relative;
+//   transition: color 0.2s;
+
+//   &.active {
+//     color: #1976d2;
+//     font-weight: 500;
+
+//     &::after {
+//       content: "";
+//       position: absolute;
+//       bottom: -14px;
+//       left: 0;
+//       right: 0;
+//       height: 2px;
+//       background: #1976d2;
+//       border-radius: 1px;
+//     }
+//   }
+
+//   &:hover:not(.active) {
+//     color: #333;
+//   }
+// }
+
+// /* Responsive */
+// @media (max-width: 768px) {
+//   .userInfo {
+//     padding: 8px 12px;
+//     height: auto; // Cho linh hoạt nếu cần co giãn
+//   }
+
+//   .searchInputWrapper {
+//     height: 32px;
+//   }
+
+//   .actionBtn {
+//     width: 32px;
+//     height: 32px;
+//   }
+
+//   .tab {
+//     margin-right: 16px;
+//     font-size: 13px;
+//   }
+// }
+
+
+// .userInfo {
+//   height: 69px;
+//   border-bottom: 1px solid #ddd;
+//   padding: 12px 16px;
+//   background: white;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 12px;
+//   flex-shrink: 0;
+// }
+
+// .searchBar {
+//   display: flex;
+//   align-items: center;
+//   gap: 12px;
+// }
+
+// .searchInputWrapper {
+//   flex: 1;
+//   display: flex;
+//   align-items: center;
+//   background: #f8f9fa;
+//   border-radius: 20px;
+//   padding: 0 12px;
+//   height: 36px;
+//   transition: background 0.2s;
+// }
+
+// .searchIcon {
+//   margin-right: 8px;
+//   display: flex;
+//   align-items: center;
+// }
+
+// .searchInput {
+//   flex: 1;
+//   border: none;
+//   outline: none;
+//   background: transparent;
+//   font-size: 14px;
+//   color: #333;
+
+//   &::placeholder {
+//     color: #999;
+//   }
+// }
+
+// .actionButtons {
+//   display: flex;
+//   gap: 8px;
+// }
+
+// .actionBtn {
+//   width: 36px;
+//   height: 36px;
+//   border: none;
+//   background: #f8f9fa;
+//   border-radius: 50%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   transition: background-color 0.2s;
+
+//   &:hover {
+//     background: #e9ecef;
+//   }
+// }
+
+
+
+// /* Responsive */
+// @media (max-width: 768px) {
+//   .userInfo {
+//     padding: 8px 12px;
+//     height: auto;
+//   }
+
+//   .searchInputWrapper {
+//     height: 32px;
+//   }
+
+//   .actionBtn {
+//     width: 32px;
+//     height: 32px;
+//   }
+
+//   .tab {
+//     margin-right: 16px;
+//     font-size: 13px;
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+// .userInfo {
+//   height: 69px;
+//   border-bottom: 1px solid #ddd;
+//   padding: 12px 16px;
+//   background: white;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 12px;
+//   flex-shrink: 0;
+// }
+
+// .searchBar {
+//   display: flex;
+//   align-items: center;
+//   gap: 12px;
+// }
+
+// .searchInputWrapper {
+//   flex: 1;
+//   display: flex;
+//   align-items: center;
+//   background: #f8f9fa;
+//   border-radius: 20px;
+//   padding: 0 12px;
+//   height: 36px;
+//   transition: all 0.2s;
+
+//   &.expanded {
+//     padding-right: 48px; /* Tạo không gian cho nút Đóng */
+//     background: white;
+//     border: 1px solid #ddd;
+//     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+//     .searchInput {
+//       flex: 1;
+//       font-size: 16px;
+//       color: #333;
+//       padding: 4px 0;
+//       border: none;
+//       outline: none;
+//     }
+//   }
+// }
+
+// .searchIcon {
+//   margin-right: 8px;
+//   display: flex;
+//   align-items: center;
+// }
+
+// .searchInput {
+//   flex: 1;
+//   border: none;
+//   outline: none;
+//   background: transparent;
+//   font-size: 14px;
+//   color: #333;
+
+//   &::placeholder {
+//     color: #999;
+//   }
+// }
+
+// .closeBtn {
+//   position: absolute;
+//   right: 12px;
+//   background: none;
+//   border: none;
+//   color: #d32f2f; /* Màu đỏ cho nút Đóng */
+//   font-size: 14px;
+//   cursor: pointer;
+//   padding: 4px 8px;
+//   border-radius: 4px;
+//   transition: background-color 0.2s;
+
+//   &:hover {
+//     background-color: #ffebee;
+//   }
+// }
+
+// .actionButtons {
+//   display: flex;
+//   gap: 8px;
+// }
+
+// .actionBtn {
+//   width: 36px;
+//   height: 36px;
+//   border: none;
+//   background: #f8f9fa;
+//   border-radius: 50%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   transition: background-color 0.2s;
+
+//   &:hover {
+//     background: #e9ecef;
+//   }
+// }
+
+// /* Responsive */
+// @media (max-width: 768px) {
+//   .userInfo {
+//     padding: 8px 12px;
+//     height: auto;
+//   }
+
+//   .searchInputWrapper {
+//     height: 32px;
+
+//     &.expanded {
+//       padding-right: 40px;
+//     }
+//   }
+
+//   .actionBtn {
+//     width: 32px;
+//     height: 32px;
+//   }
+
+//   .closeBtn {
+//     right: 8px;
+//     font-size: 12px;
+//     padding: 2px 6px;
+//   }
+// }
+
+
+
+
+
+// .userInfo {
+//   height: 69px; /* Giữ nguyên chiều cao */
+//   border-bottom: 1px solid #ddd;
+//   padding: 12px 16px;
+//   background: white;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 12px;
+//   flex-shrink: 0;
+// }
+
+// .searchBar {
+//   display: flex;
+//   align-items: center;
+//   gap: 12px;
+// }
+
+// .searchInputWrapper {
+//   flex: 1;
+//   display: flex;
+//   align-items: center;
+//   background: #f8f9fa;
+//   border-radius: 20px;
+//   padding: 0 12px;
+//   height: 36px;
+//   transition: all 0.2s;
+//   cursor: pointer;
+  
+//   &.expanded {
+//     background: #f8f9fa; /* Giữ nguyên background */
+//     border: none; /* Giữ nguyên không có viền */
+//     box-shadow: none; /* Loại bỏ shadow */
+//     cursor: default;
+//   }
+// }
+
+// .searchIcon {
+//   display: flex;
+//   align-items: center;
+//   margin-right: 8px; /* Cách ô input một chút */
+//   flex-shrink: 0; /* Không bị co lại */
+// }
+
+// .searchInput {
+//   flex: 1;
+//   border: none;
+//   outline: none;
+//   background: transparent;
+//   font-size: 14px;
+//   color: #333;
+//   width: 100%; /* Đảm bảo ô nhập chiếm không gian */
+  
+//   &::placeholder {
+//     color: #999;
+//   }
+// }
+
+// .rightSection {
+//   display: flex;
+//   gap: 8px;
+//   min-width: 84px; /* Đảm bảo không gian cố định cho 2 nút action (36+8+36+4) */
+//   justify-content: flex-end;
+// }
+
+// .closeBtn {
+//   background: none;
+//   border: none;
+//   color: #d32f2f; /* Màu đỏ cho nút Đóng */
+//   font-size: 14px;
+//   cursor: pointer;
+//   padding: 4px 8px;
+//   border-radius: 4px;
+//   transition: background-color 0.2s;
+//   flex-shrink: 0; /* Không bị co lại */
+//   white-space: nowrap; /* Không cho text xuống dòng */
+  
+//   &:hover {
+//     background-color: #ffebee;
+//   }
+// }
+
+// .actionBtn {
+//   width: 36px;
+//   height: 36px;
+//   border: none;
+//   background: #f8f9fa;
+//   border-radius: 50%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   transition: background-color 0.2s;
+  
+//   &:hover {
+//     background: #e9ecef;
+//   }
+// }
+
+// /* Responsive */
+// @media (max-width: 768px) {
+//   .userInfo {
+//     padding: 8px 12px;
+//     height: auto;
+//   }
+  
+//   .searchInputWrapper {
+//     height: 32px;
+    
+//     &.expanded {
+//       background: #f8f9fa;
+//       border: none;
+//       box-shadow: none;
+//     }
+//   }
+  
+//   .rightSection {
+//     min-width: 72px; /* Điều chỉnh cho mobile */
+//   }
+  
+//   .actionBtn {
+//     width: 32px;
+//     height: 32px;
+//   }
+  
+//   .closeBtn {
+//     font-size: 12px;
+//     padding: 2px 6px;
+//   }
+// }
+
+
+
+
+
+
+
+
+// .userInfo {
+//   height: 69px; /* Chiều cao cố định, không thay đổi */
+//   border-bottom: 1px solid #ddd;
+//   padding: 12px 16px;
+//   background: white;
+//   display: flex;
+//   align-items: center; /* Căn giữa theo chiều dọc */
+//   flex-shrink: 0;
+//   width: 100%; /* Chiều rộng cố định */
+//   box-sizing: border-box; /* Đảm bảo padding không làm thay đổi kích thước tổng */
+// }
+
+// .searchBar {
+//   display: flex;
+//   align-items: center;
+//   gap: 12px;
+//   width: 100%;
+//   flex: 1; /* Chiếm toàn bộ không gian có sẵn */
+// }
+
+// .searchInputWrapper {
+//   flex: 1;
+//   display: flex;
+//   align-items: center;
+//   background: #f8f9fa;
+//   border-radius: 20px;
+//   padding: 0 12px;
+//   height: 36px;
+//   transition: all 0.2s;
+//   cursor: pointer;
+
+//   /* Loại bỏ class expanded vì không cần thay đổi kích thước */
+// }
+
+// .searchIcon {
+//   display: flex;
+//   align-items: center;
+//   margin-right: 8px; /* Cách ô input một chút */
+//   flex-shrink: 0; /* Không bị co lại */
+// }
+
+// .searchInput {
+//   flex: 1;
+//   border: none;
+//   outline: none;
+//   background: transparent;
+//   font-size: 14px;
+//   color: #333;
+//   width: 100%; /* Đảm bảo ô nhập chiếm không gian */
+
+//   &::placeholder {
+//     color: #999;
+//   }
+// }
+
+// .rightSection {
+//   display: flex;
+//   gap: 8px;
+//   min-width: 84px; /* Đảm bảo không gian cố định cho 2 nút action (36+8+36+4) hoặc nút Đóng */
+//   justify-content: flex-end;
+//   align-items: center; /* Đảm bảo các nút thẳng hàng ngang */
+// }
+
+// .closeBtn {
+//   background: none;
+//   border: none;
+//   color: #d32f2f; /* Màu đỏ cho nút Đóng */
+//   font-size: 14px;
+//   cursor: pointer;
+//   padding: 4px 8px;
+//   border-radius: 4px;
+//   transition: background-color 0.2s;
+//   flex-shrink: 0; /* Không bị co lại */
+//   white-space: nowrap; /* Không cho text xuống dòng */
+//   height: 36px; /* Giữ kích thước bằng actionBtn */
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+
+//   &:hover {
+//     background-color: #ffebee;
+//   }
+// }
+
+// .actionBtn {
+//   width: 36px;
+//   height: 36px;
+//   border: none;
+//   background: #f8f9fa;
+//   border-radius: 50%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   transition: background-color 0.2s;
+
+//   &:hover {
+//     background: #e9ecef;
+//   }
+// }
+
+// /* Responsive */
+// @media (max-width: 768px) {
+//   .userInfo {
+//     padding: 8px 12px;
+//     height: auto;
+//   }
+
+//   .searchInputWrapper {
+//     height: 32px;
+//   }
+
+//   .rightSection {
+//     min-width: 72px; /* Điều chỉnh cho mobile */
+//   }
+
+//   .actionBtn {
+//     width: 32px;
+//     height: 32px;
+//   }
+
+//   .closeBtn {
+//     font-size: 12px;
+//     padding: 2px 6px;
+//     height: 32px; /* Điều chỉnh cho mobile */
+//   }
+// }
+
+
+// .userInfo {
+//   height: 69px; /* Chiều cao cố định, không thay đổi */
+//   border-bottom: 1px solid #ddd;
+//   padding: 12px 16px;
+//   background: white;
+//   display: flex;
+//   align-items: center; /* Căn giữa theo chiều dọc */
+//   flex-shrink: 0;
+//   width: 100%; /* Chiều rộng cố định */
+//   box-sizing: border-box; /* Đảm bảo padding không làm thay đổi kích thước tổng */
+// }
+
+// .searchBar {
+//   display: flex;
+//   align-items: center;
+//   gap: 12px;
+//   width: 100%;
+//   flex: 1; /* Chiếm toàn bộ không gian có sẵn */
+// }
+
+// .searchInputWrapper {
+//   flex: 1;
+//   display: flex;
+//   align-items: center;
+//   background: #f8f9fa;
+//   border-radius: 20px;
+//   padding: 0 12px;
+//   height: 36px;
+//   transition: all 0.2s;
+//   cursor: pointer;
+// }
+
+// .searchIcon {
+//   display: flex;
+//   align-items: center;
+//   margin-right: 8px; /* Cách ô input một chút */
+//   flex-shrink: 0; /* Không bị co lại */
+// }
+
+// .searchInput {
+//   flex: 1;
+//   border: none;
+//   outline: none;
+//   background: transparent;
+//   font-size: 14px;
+//   color: #333;
+//   width: 100%; /* Đảm bảo ô nhập chiếm không gian */
+
+//   &::placeholder {
+//     color: #999;
+//   }
+// }
+
+// .rightSection {
+//   display: flex;
+//   gap: 8px;
+//   min-width: 84px; /* Đảm bảo không gian cố định cho 2 nút action hoặc nút Đóng */
+//   justify-content: flex-end;
+//   align-items: center; /* Đảm bảo các nút thẳng hàng ngang */
+// }
+
+// .closeBtn {
+//   width: 36px; /* Khớp với actionBtn */
+//   height: 36px; /* Khớp với actionBtn */
+//   background: #f8f9fa; /* Khớp background với actionBtn */
+//   border: none;
+//   color: #d32f2f; /* Màu đỏ cho nút Đóng */
+//   font-size: 14px;
+//   cursor: pointer;
+//   padding: 0;
+//   border-radius: 50%; /* Hình tròn như actionBtn */
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   transition: background-color 0.2s;
+//   flex-shrink: 0; /* Không bị co lại */
+//   white-space: nowrap; /* Không cho text xuống dòng */
+
+//   &:hover {
+//     background-color: #e9ecef; /* Khớp hover với actionBtn */
+//   }
+// }
+
+// .actionBtn {
+//   width: 36px;
+//   height: 36px;
+//   border: none;
+//   background: #f8f9fa;
+//   border-radius: 50%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   transition: background-color 0.2s;
+
+//   &:hover {
+//     background: #e9ecef;
+//   }
+// }
+
+// /* Responsive */
+// @media (max-width: 768px) {
+//   .userInfo {
+//     padding: 8px 12px;
+//     height: auto;
+//   }
+
+//   .searchInputWrapper {
+//     height: 32px;
+//   }
+
+//   .rightSection {
+//     min-width: 72px; /* Điều chỉnh cho mobile */
+//   }
+
+//   .actionBtn {
+//     width: 32px;
+//     height: 32px;
+//   }
+
+//   .closeBtn {
+//     width: 32px; /* Điều chỉnh cho mobile */
+//     height: 32px; /* Điều chỉnh cho mobile */
+//     font-size: 12px;
+//     padding: 0;
+//   }
+// }
+
+
+.userInfo {
+  height: 68px;
+  border-bottom: 1px solid #ddd;
+  padding: 12px 16px;
+  background: white;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  flex: 1;
+}
+
+.searchInputWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 20px;
+  padding: 0 12px;
+  height: 36px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.searchIcon {
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: #333;
+  width: 100%;
+
+  &::placeholder {
+    color: #999;
+  }
+}
+
+.rightSection {
+  display: flex;
+  gap: 8px;
+  min-width: 84px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.actionBtn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #f8f9fa;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: #e9ecef;
+  }
+}
+
+.closeBtnWide {
+  height: 36px;
+  background: #f8f9fa;
+  border: none;
+  color: #d32f2f;
+  cursor: pointer;
+  border-radius: 20px; /* dạng pill */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+
+  /* rộng bằng 2 actionBtn (36px * 2) + gap (8px) */
+  width: calc(36px * 2 + 8px);
+
+  &:hover {
+    background-color: #e9ecef;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .userInfo {
+    padding: 8px 12px;
+    height: auto;
+  }
+
+  .searchInputWrapper {
+    height: 32px;
+  }
+
+  .rightSection {
+    min-width: 72px;
+  }
+
+  .actionBtn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .closeBtnWide {
+    height: 32px;
+    width: calc(32px * 2 + 8px); /* điều chỉnh cho mobile */
+    font-size: 12px;
+  }
+}

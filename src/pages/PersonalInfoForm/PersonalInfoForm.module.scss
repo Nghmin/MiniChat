@@ -1,0 +1,954 @@
+// .container {
+//   min-height: 100vh;
+//   background: linear-gradient(135deg, #667eea, #764ba2); // Gradient giống Register
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 1.5rem;
+//   font-family: "Segoe UI", system-ui, sans-serif;
+// }
+
+// .wrapper {
+//   max-width: 36rem; // Đồng bộ với Register
+//   width: 100%;
+// }
+
+// .box {
+//   background: rgba(255, 255, 255, 0.92);
+//   backdrop-filter: saturate(140%) blur(2px); // Hiệu ứng kính mờ giống Register
+//   border-radius: 1rem;
+//   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+//   padding: 2rem;
+//   max-height: calc(100vh - 3rem); // Giới hạn chiều cao để không cuộn
+//   overflow: hidden;
+//   animation: fadeIn 0.35s ease;
+// }
+
+// @keyframes fadeIn {
+//   from {
+//     opacity: 0;
+//     transform: translateY(16px);
+//   }
+//   to {
+//     opacity: 1;
+//     transform: translateY(0);
+//   }
+// }
+
+// .header {
+//   text-align: center;
+//   margin-bottom: 1.5rem;
+// }
+
+// .title {
+//   font-size: 1.75rem;
+//   font-weight: 800;
+//   color: #1f2937;
+//   margin-bottom: 0.25rem;
+// }
+
+// .subtitle {
+//   font-size: 1rem;
+//   color: #6b7280;
+// }
+
+// .form {
+//   display: grid;
+//   gap: 1.5rem;
+// }
+
+// .avatarSection {
+//   text-align: center;
+// }
+
+// .avatarWrapper {
+//   position: relative;
+//   display: inline-block;
+// }
+
+// .avatarContainer {
+//   width: 6rem;
+//   height: 6rem;
+//   border-radius: 50%;
+//   border: 3px solid #e5e7eb;
+//   overflow: hidden;
+//   background-color: #f3f4f6;
+//   margin: 0 auto;
+
+//   img {
+//     width: 100%;
+//     height: 100%;
+//     object-fit: cover;
+//   }
+// }
+
+// .avatarPlaceholder {
+//   width: 100%;
+//   height: 100%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+
+//   svg {
+//     width: 2rem;
+//     height: 2rem;
+//     color: #9ca3af;
+//   }
+// }
+
+// .uploadButton {
+//   position: absolute;
+//   bottom: 0;
+//   right: 0;
+//   background-color: #4f46e5;
+//   color: white;
+//   border-radius: 50%;
+//   width: 2rem;
+//   height: 2rem;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   transition: all 0.3s ease;
+
+//   &:hover {
+//     background-color: #4338ca;
+//     transform: scale(1.1);
+//   }
+
+//   svg {
+//     width: 1rem;
+//     height: 1rem;
+//   }
+// }
+
+// .hiddenInput {
+//   display: none;
+// }
+
+// .avatarLabel {
+//   font-size: 0.875rem;
+//   color: #6b7280;
+//   margin-top: 0.5rem;
+// }
+
+// .formGrid {
+//   display: grid;
+//   grid-template-columns: 1fr 1fr;
+//   gap: 1rem;
+
+//   @media (max-width: 640px) {
+//     grid-template-columns: 1fr;
+//     gap: 1rem;
+//   }
+// }
+
+// .form-group {
+//   display: flex;
+//   flex-direction: column;
+
+//   &.fullWidth {
+//     grid-column: 1 / -1;
+//   }
+// }
+
+// .label {
+//   font-size: 0.875rem;
+//   font-weight: 600;
+//   color: #4b5563;
+//   margin-bottom: 0.5rem;
+// }
+
+// .input-wrapper {
+//   position: relative;
+// }
+
+// .input-icon {
+//   position: absolute;
+//   left: 0.75rem;
+//   top: 50%;
+//   transform: translateY(-50%);
+//   width: 1.25rem;
+//   height: 1.25rem;
+//   color: #9ca3af;
+//   pointer-events: none;
+// }
+
+// .input {
+//   width: 100%;
+//   padding: 0.75rem 1rem 0.75rem 2.5rem;
+//   border: 1px solid #e5e7eb;
+//   border-radius: 0.5rem;
+//   font-size: 0.875rem;
+//   transition: all 0.3s ease;
+//   box-sizing: border-box;
+
+//   &:focus {
+//     outline: none;
+//     border-color: #667eea;
+//     box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25);
+//     background-color: #fff;
+//   }
+
+//   &::placeholder {
+//     color: #9ca3af;
+//   }
+// }
+
+// .genderOptions {
+//   display: grid;
+//   grid-template-columns: 1fr 1fr;
+//   gap: 0.5rem;
+
+//   @media (max-width: 640px) {
+//     grid-template-columns: 1fr;
+//   }
+// }
+
+// .genderOption {
+//   position: relative;
+// }
+
+// .genderButton {
+//   padding: 0.75rem 1rem;
+//   border: 1px solid #e5e7eb;
+//   border-radius: 0.5rem;
+//   text-align: center;
+//   cursor: pointer;
+//   transition: all 0.3s ease;
+//   font-size: 0.875rem;
+//   font-weight: 500;
+
+//   &:hover {
+//     border-color: #9ca3af;
+//   }
+
+//   &.selected {
+//     border-color: #667eea;
+//     background-color: #eff6ff;
+//     color: #1d4ed8;
+//   }
+// }
+
+// .btn {
+//   width: 100%;
+//   padding: 0.75rem 1.5rem;
+//   border-radius: 0.5rem;
+//   background: linear-gradient(135deg, #667eea, #764ba2); // Gradient giống Register
+//   color: white;
+//   font-weight: 600;
+//   font-size: 1rem;
+//   border: none;
+//   cursor: pointer;
+//   transition: all 0.3s ease;
+
+//   &.disabled {
+//     background: #d1d5db;
+//     color: #6b7280;
+//     cursor: not-allowed;
+//   }
+
+//   &:not(.disabled):hover {
+//     transform: translateY(-2px);
+//     box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+//   }
+
+//   &:not(.disabled):active {
+//     transform: translateY(0);
+//   }
+// }
+
+// .successMessage {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 0.5rem;
+
+//   svg {
+//     width: 1.25rem;
+//     height: 1.25rem;
+//   }
+// }
+
+// .preview {
+//   margin-top: 1.5rem;
+//   padding: 1rem;
+//   background-color: #f9fafb;
+//   border-radius: 0.5rem;
+//   border: 1px solid #e5e7eb;
+// }
+
+// .previewTitle {
+//   font-weight: 600;
+//   color: #1f2937;
+//   margin-bottom: 0.5rem;
+//   font-size: 1rem;
+// }
+
+// .previewContent {
+//   display: grid;
+//   gap: 0.5rem;
+
+//   p {
+//     margin: 0;
+//     font-size: 0.875rem;
+//     color: #374151;
+
+//     span {
+//       font-weight: 600;
+//       color: #1f2937;
+//     }
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// .container {
+//   min-height: 100vh;
+//   background: linear-gradient(135deg, #667eea, #764ba2);
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 1.5rem;
+//   font-family: "Segoe UI", system-ui, sans-serif;
+//   position: relative; /* Thêm để làm container tham chiếu cho error-message */
+// }
+
+// .wrapper {
+//   max-width: 36rem;
+//   width: 100%;
+// }
+
+// .box {
+//   background: rgba(255, 255, 255, 0.92);
+//   backdrop-filter: saturate(140%) blur(2px);
+//   border-radius: 1rem;
+//   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+//   padding: 2rem;
+//   max-height: calc(100vh - 3rem);
+//   overflow: hidden;
+//   animation: fadeIn 0.35s ease;
+//   position: relative;
+// }
+
+// @keyframes fadeIn {
+//   from {
+//     opacity: 0;
+//     transform: translateY(16px);
+//   }
+//   to {
+//     opacity: 1;
+//     transform: translateY(0);
+//   }
+// }
+
+// .header {
+//   text-align: center;
+//   margin-bottom: 1.5rem;
+// }
+
+// .title {
+//   font-size: 1.75rem;
+//   font-weight: 800;
+//   color: #1f2937;
+//   margin-bottom: 0.25rem;
+// }
+
+// .subtitle {
+//   font-size: 1rem;
+//   color: #6b7280;
+// }
+
+// .form {
+//   display: grid;
+//   gap: 1.5rem;
+// }
+
+// .avatarSection {
+//   text-align: center;
+// }
+
+// .avatarWrapper {
+//   position: relative;
+//   display: inline-block;
+// }
+
+// .avatarContainer {
+//   width: 6rem;
+//   height: 6rem;
+//   border-radius: 50%;
+//   border: 3px solid #e5e7eb;
+//   overflow: hidden;
+//   background-color: #f3f4f6;
+//   margin: 0 auto;
+
+//   img {
+//     width: 100%;
+//     height: 100%;
+//     object-fit: cover;
+//   }
+// }
+
+// .avatarPlaceholder {
+//   width: 100%;
+//   height: 100%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+
+//   svg {
+//     width: 2rem;
+//     height: 2rem;
+//     color: #9ca3af;
+//   }
+// }
+
+// .uploadButton {
+//   position: absolute;
+//   bottom: 0;
+//   right: 0;
+//   background-color: #4f46e5;
+//   color: white;
+//   border-radius: 50%;
+//   width: 2rem;
+//   height: 2rem;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   transition: all 0.3s ease;
+
+//   &:hover {
+//     background-color: #4338ca;
+//     transform: scale(1.1);
+//   }
+
+//   svg {
+//     width: 1rem;
+//     height: 1rem;
+//   }
+// }
+
+// .hiddenInput {
+//   display: none;
+// }
+
+// .avatarLabel {
+//   font-size: 0.875rem;
+//   color: #6b7280;
+//   margin-top: 0.5rem;
+// }
+
+// .formGrid {
+//   display: grid;
+//   grid-template-columns: 1fr 1fr;
+//   gap: 1rem;
+
+//   @media (max-width: 640px) {
+//     grid-template-columns: 1fr;
+//     gap: 1rem;
+//   }
+// }
+
+// .form-group {
+//   display: flex;
+//   flex-direction: column;
+
+//   &.fullWidth {
+//     grid-column: 1 / -1;
+//   }
+// }
+
+// .label {
+//   font-size: 0.875rem;
+//   font-weight: 600;
+//   color: #4b5563;
+//   margin-bottom: 0.5rem;
+// }
+
+// .input-wrapper {
+//   position: relative;
+// }
+
+// .input-icon {
+//   position: absolute;
+//   left: 0.75rem;
+//   top: 50%;
+//   transform: translateY(-50%);
+//   width: 1.25rem;
+//   height: 1.25rem;
+//   color: #9ca3af;
+//   pointer-events: none;
+// }
+
+// .input {
+//   width: 100%;
+//   padding: 0.75rem 1rem 0.75rem 2.5rem;
+//   border: 1px solid #e5e7eb;
+//   border-radius: 0.5rem;
+//   font-size: 0.875rem;
+//   transition: all 0.3s ease;
+//   box-sizing: border-box;
+
+//   &:focus {
+//     outline: none;
+//     border-color: #667eea;
+//     box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25);
+//     background-color: #fff;
+//   }
+
+//   &::placeholder {
+//     color: #9ca3af;
+//   }
+// }
+
+// .genderOptions {
+//   display: grid;
+//   grid-template-columns: 1fr 1fr;
+//   gap: 0.5rem;
+
+//   @media (max-width: 640px) {
+//     grid-template-columns: 1fr;
+//   }
+// }
+
+// .genderOption {
+//   position: relative;
+// }
+
+// .genderButton {
+//   padding: 0.75rem 1rem;
+//   border: 1px solid #e5e7eb;
+//   border-radius: 0.5rem;
+//   text-align: center;
+//   cursor: pointer;
+//   transition: all 0.3s ease;
+//   font-size: 0.875rem;
+//   font-weight: 500;
+
+//   &:hover {
+//     border-color: #9ca3af;
+//   }
+
+//   &.selected {
+//     border-color: #667eea;
+//     background-color: #eff6ff;
+//     color: #1d4ed8;
+//   }
+// }
+
+// .btn {
+//   width: 100%;
+//   padding: 0.75rem 1.5rem;
+//   border-radius: 0.5rem;
+//   background: linear-gradient(135deg, #667eea, #764ba2);
+//   color: white;
+//   font-weight: 600;
+//   font-size: 1rem;
+//   border: none;
+//   cursor: pointer;
+//   transition: all 0.3s ease;
+
+//   &.disabled {
+//     background: #d1d5db;
+//     color: #6b7280;
+//     cursor: not-allowed;
+//   }
+
+//   &:not(.disabled):hover {
+//     transform: translateY(-2px);
+//     box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+//   }
+
+//   &:not(.disabled):active {
+//     transform: translateY(0);
+//   }
+// }
+
+// .successMessage {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 0.5rem;
+
+//   svg {
+//     width: 1.25rem;
+//     height: 1.25rem;
+//   }
+// }
+
+// .preview {
+//   margin-top: 1.5rem;
+//   padding: 1rem;
+//   background-color: #f9fafb;
+//   border-radius: 0.5rem;
+//   border: 1px solid #e5e7eb;
+// }
+
+// .previewTitle {
+//   font-weight: 600;
+//   color: #1f2937;
+//   margin-bottom: 0.5rem;
+//   font-size: 1rem;
+// }
+
+// .previewContent {
+//   display: grid;
+//   gap: 0.5rem;
+
+//   p {
+//     margin: 0;
+//     font-size: 0.875rem;
+//     color: #374151;
+
+//     span {
+//       font-weight: 600;
+//       color: #1f2937;
+//     }
+//   }
+// }
+
+// .error-message {
+//   position: absolute;
+//   bottom: 30px;
+//   left: 50%;
+//   transform: translateX(-50%);
+//   color: #caddeb; /* Giữ màu chữ đỏ sẫm giống ảnh */
+//   text-align: center;
+//   width: 80%;
+//   max-width: 300px;
+// }
+
+
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+.wrapper {
+  max-width: 36rem;
+  width: 100%;
+}
+
+.box {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(140%) blur(2px);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  padding: 2rem;
+  max-height: calc(100vh - 3rem);
+  overflow: hidden;
+  animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.form {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.avatarSection {
+  text-align: center;
+}
+
+.avatarWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.avatarContainer {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  border: 3px solid #e5e7eb;
+  overflow: hidden;
+  background-color: #f3f4f6;
+  margin: 0 auto;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 2rem;
+    height: 2rem;
+    color: #9ca3af;
+  }
+}
+
+.uploadButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #4f46e5;
+  color: white;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #4338ca;
+    transform: scale(1.1);
+  }
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.avatarLabel {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  &.fullWidth {
+    grid-column: 1 / -1;
+  }
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25);
+    background-color: #fff;
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+}
+
+.genderOptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.genderOption {
+  position: relative;
+}
+
+.genderButton {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  &:hover {
+    border-color: #9ca3af;
+  }
+
+  &.selected {
+    border-color: #667eea;
+    background-color: #eff6ff;
+    color: #1d4ed8;
+  }
+}
+
+.btn {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &.disabled {
+    background: #d1d5db;
+    color: #6b7280;
+    cursor: not-allowed;
+  }
+
+  &:not(.disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+  }
+
+  &:not(.disabled):active {
+    transform: translateY(0);
+  }
+}
+
+.successMessage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+.preview {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.previewTitle {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.previewContent {
+  display: grid;
+  gap: 0.5rem;
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #374151;
+
+    span {
+      font-weight: 600;
+      color: #1f2937;
+    }
+  }
+}
+
+// Sửa lại error-message để hiển thị trong form thay vì absolute position
+.error-message {
+  padding: 0.75rem 1rem;
+  background-color: #d7eef5;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  color: #dc2626;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+}

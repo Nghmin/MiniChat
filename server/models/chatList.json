@@ -1,0 +1,121 @@
+[
+  {
+    "id": "ctc_1",
+    "type": "personal",
+    "members": [
+      "global-id",
+      "1678b960-7ad1-43ff-8837-42477418b8f9"
+    ],
+    "last_message": {
+      "content": "Xin chào bạn !",
+      "sender": "global-id",
+      "timestamp": "2025-09-09T05:00:00.000Z",
+      "message_type": "text"
+    },
+    "created_at": "2025-09-07T02:00:00.000Z",
+    "updated_at": "2025-09-07T02:00:00.000Z",
+    "active": true
+  },
+  {
+    "id": "ctc_2",
+    "type": "personal",
+    "members": [
+      "12053cae-9ca7-4cb0-b546-56d7070d216f",
+      "1678b960-7ad1-43ff-8837-42477418b8f9"
+    ],
+    "last_message": {
+      "content": "Hello!",
+      "sender": "12053cae-9ca7-4cb0-b546-56d7070d216f",
+      "timestamp": "2025-09-09T05:00:00.000Z",
+      "message_type": "text"
+    },
+    "created_at": "2025-09-07T02:00:00.000Z",
+    "updated_at": "2025-09-07T02:00:00.000Z",
+    "active": true
+  },
+  {
+    "id": "ctc_1",
+    "type": "personal",
+    "members": [
+      "global-id",
+      "395355c5-6bfd-4e8a-bfed-1abbd625d0ce"
+    ],
+    "last_message": {
+      "content": "Xin chào bạn !",
+      "sender": "global-id",
+      "timestamp": "2025-09-09T14:56:06.336Z",
+      "message_type": "text"
+    },
+    "created_at": "2025-09-09T14:56:06.336Z",
+    "updated_at": "2025-09-09T14:56:06.336Z",
+    "active": true
+  },
+  {
+    "id": "ctc_1",
+    "type": "personal",
+    "members": [
+      "global-id",
+      "39dd1a2e-e50e-40fc-8f61-9b1c0e39b426"
+    ],
+    "last_message": {
+      "content": "Xin chào bạn !",
+      "sender": "global-id",
+      "timestamp": "2025-09-09T14:58:32.495Z",
+      "message_type": "text"
+    },
+    "created_at": "2025-09-09T14:58:32.495Z",
+    "updated_at": "2025-09-09T14:58:32.495Z",
+    "active": true
+  },
+  {
+    "id": "ctc_1",
+    "type": "personal",
+    "members": [
+      "global-id",
+      "3ac88e2b-9ad4-4c42-b04b-25587e927941"
+    ],
+    "last_message": {
+      "content": "Xin chào bạn !",
+      "sender": "global-id",
+      "timestamp": "2025-09-09T15:03:43.787Z",
+      "message_type": "text"
+    },
+    "created_at": "2025-09-09T15:03:43.787Z",
+    "updated_at": "2025-09-09T15:03:43.787Z",
+    "active": true
+  },
+  {
+    "id": "ctc_1",
+    "type": "personal",
+    "members": [
+      "global-id",
+      "778724a9-3565-486a-9619-d2b3e6461465"
+    ],
+    "last_message": {
+      "content": "Xin chào bạn !",
+      "sender": "global-id",
+      "timestamp": "2025-09-09T15:05:30.313Z",
+      "message_type": "text"
+    },
+    "created_at": "2025-09-09T15:05:30.313Z",
+    "updated_at": "2025-09-09T15:05:30.313Z",
+    "active": true
+  },
+  {
+    "id": "ctc_3",
+    "type": "personal",
+    "members": [
+      "global-id",
+      "add694e1-f826-40e7-a07a-0b3be329b417"
+    ],
+    "last_message": {
+      "content": "Xin chào bạn !",
+      "sender": "global-id",
+      "timestamp": "2025-09-09T15:07:19.191Z",
+      "message_type": "text"
+    },
+    "created_at": "2025-09-09T15:07:19.191Z",
+    "updated_at": "2025-09-09T15:07:19.191Z",
+    "active": true
+  }
+]

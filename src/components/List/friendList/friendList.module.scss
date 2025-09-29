@@ -1,0 +1,116 @@
+
+.friendList {
+  width: 100%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+
+  .friend-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 0;
+    min-height: 0;
+
+    .friend-item {
+      display: flex;
+      align-items: center;
+      padding: 6.5px 20px;
+      cursor: pointer;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background-color 0.2s;
+      min-height: 64px;
+
+      &:hover {
+        background-color: #f8f9fa;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .avatar-section {
+        position: relative;
+        margin-right: 14px;
+        margin-left: -10px;
+        flex-shrink: 0;
+
+        .avatar {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+      }
+
+      .content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .name {
+          font-size: 15px;
+          font-weight: 500;
+          color: #1f2937;
+          margin: 0;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+
+  .friend-container::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .friend-container::-webkit-scrollbar-track {
+    background: #f8f9fa;
+  }
+
+  .friend-container::-webkit-scrollbar-thumb {
+    background: #dee2e6;
+    border-radius: 3px;
+
+    &:hover {
+      background: #adb5bd;
+    }
+  }
+
+  .friend-container {
+    scrollbar-width: thin;
+    scrollbar-color: #dee2e6 #f8f9fa;
+  }
+}
+
+@media (max-width: 768px) {
+  .friendList {
+    .friend-container {
+      .friend-item {
+        padding: 14px 16px;
+        min-height: 60px;
+
+        .avatar-section {
+          margin-right: 14px;
+
+          .avatar {
+            width: 44px;
+            height: 44px;
+          }
+        }
+
+        .content {
+          .name {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+}

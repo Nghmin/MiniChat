@@ -1,0 +1,33 @@
+
+.cr {
+  background-color: white;
+  padding: 8px 16px;
+  border-top: 1px solid #dee2e6;
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.cr-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  color: #6c757d;
+
+  &:hover {
+    background-color: #e9ecef;
+  }
+}
+
+@media (max-width: 768px) {
+  .cr {
+    padding: 6px 12px;
+    gap: 8px;
+  }
+}

@@ -1,0 +1,1372 @@
+
+// import classNames from "classnames/bind";
+// import styles from "./Chat.module.scss";
+// import { useState, useEffect, useRef, useCallback } from "react";
+// import ProFile1 from "~/pages/ProFile1";
+// import ChatPreview from "./ChatPreview";
+// import FriendRequestBar from "./FriendRequestBar";
+// import FriendRequestConfirmationBar from "./FriendRequestConfirmationBar";
+// import ChatHeader from "./ChatHeader";
+// import axios from "axios";
+// import { io } from "socket.io-client";
+
+// const cx = classNames.bind(styles);
+
+// function Chat({ friend, onToggleDetail }) {
+//   const [open, setOpen] = useState(false);
+//   const [text, setText] = useState("");
+//   const [showProfile, setShowProfile] = useState(false);
+//   const [previewImage, setPreviewImage] = useState(null);
+//   const messagesContainerRef = useRef(null);
+//   const [messages, setMessages] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   const [showSendRequestBar, setShowSendRequestBar] = useState(false);
+//   const socketRef = useRef(null);
+
+//   // Memoized scroll function
+//   const scrollToBottom = useCallback(() => {
+//     if (messagesContainerRef.current) {
+//       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+//     }
+//   }, []);
+
+//   // Scroll to bottom when messages change
+//   useEffect(() => {
+//     scrollToBottom();
+//   }, [messages, scrollToBottom]);
+
+//   // Socket connection setup
+//   useEffect(() => {
+//     if (friend?.sender) {
+//       socketRef.current = io("http://localhost:5000", {
+//         query: { userId: friend.sender },
+//       });
+
+//       socketRef.current.on("receiveMessage", (data) => {
+//         console.log("📩 Received message from", data.from, ":", data.message);
+        
+//         // Add received message to local state
+//         const receivedMessage = {
+//           id: Date.now() + Math.random(),
+//           text: data.message,
+//           type: "received",
+//           timestamp: new Date(),
+//         };
+        
+//         setMessages((prev) => [...prev, receivedMessage]);
+//       });
+
+//       return () => {
+//         if (socketRef.current) {
+//           socketRef.current.disconnect();
+//         }
+//       };
+//     }
+//   }, [friend?.sender]);
+
+//   // Fetch messages from API
+//   useEffect(() => {
+//     const fetchMessages = async () => {
+//       if (!friend || !friend.id) {
+//         setMessages([]);
+//         setLoading(false);
+//         return;
+//       }
+
+//       setLoading(true);
+//       setError(null);
+
+//       try {
+//         const response = await axios.post("http://localhost:5000/api/chat/messages/", {
+//           friendId: friend.id,
+//         });
+
+//         if (response.status === 200 && Array.isArray(response.data)) {
+//           const transformedMessages = response.data
+//             .map((msg) => ({
+//               id: msg.id,
+//               text: msg.message_type === "text" ? msg.content : null,
+//               type: msg.sender !== friend.member ? "sent" : "received",
+//               timestamp: new Date(msg.timestamp),
+//               image: msg.message_type === "image" ? `http://localhost:5000${msg.url}` : null,
+//               video: msg.message_type === "video" ? `http://localhost:5000${msg.url}` : null,
+//               file: msg.message_type === "file" 
+//                 ? { name: msg.content, url: `http://localhost:5000${msg.url}` } 
+//                 : null,
+//             }))
+//             .filter((msg) => msg.text || msg.image || msg.video || msg.file);
+
+//           setMessages(transformedMessages);
+//         } else {
+//           setError("Dữ liệu tin nhắn không hợp lệ.");
+//         }
+//       } catch (err) {
+//         setError("Lỗi khi tải tin nhắn: " + (err.response?.data?.message || err.message));
+//         console.error("Error fetching messages:", err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchMessages();
+//   }, [friend]);
+
+//   const emojis = ["😀", "😂", "😍", "😊", "😎", "🤔", "👍", "❤️", "🎉", "🔥", "💯", "✨"];
+
+//   const handleEmoji = useCallback((emoji) => {
+//     setText((prev) => prev + emoji);
+//     setOpen(false);
+//   }, []);
+
+//   const sendMessageToAPI = useCallback(async (messageData) => {
+//     try {
+//       await axios.post("http://localhost:5000/api/chat/send-message/", {
+//         id: "",
+//         conversationId: friend.id,
+//         sender: friend.sender,
+//         content: messageData.content,
+//         message_type: messageData.message_type,
+//         timestamp: new Date().toISOString(),
+//         recipient: friend.member,
+//         url: messageData.url || "",
+//       });
+//     } catch (error) {
+//       console.error("Error sending message to API:", error);
+//       throw error;
+//     }
+//   }, [friend]);
+
+//   const handleSend = useCallback(async () => {
+//     const messageContent = text.trim() || "👍";
+    
+//     const newMessage = {
+//       id: Date.now(),
+//       text: messageContent,
+//       type: "sent",
+//       timestamp: new Date(),
+//     };
+
+//     setMessages((prev) => [...prev, newMessage]);
+//     setText("");
+
+//     // Send via socket
+//     if (socketRef.current) {
+//       socketRef.current.emit("sendMessage", {
+//         toUserId: friend.member,
+//         message: messageContent,
+//       });
+//     }
+
+//     // Send to API
+//     try {
+//       await sendMessageToAPI({
+//         content: messageContent,
+//         message_type: "text",
+//       });
+//     } catch (error) {
+//       console.error("Failed to send message:", error);
+//       // Optionally show error to user or retry
+//     }
+//   }, [text, friend, sendMessageToAPI]);
+
+//   const handleKeyPress = useCallback((e) => {
+//     if (e.key === "Enter" && !e.shiftKey) {
+//       e.preventDefault();
+//       handleSend();
+//     }
+//   }, [handleSend]);
+
+//   const handleAvatarClick = useCallback(() => {
+//     setShowProfile(true);
+//   }, []);
+
+//   // Media selection handler
+//   const handleMediaSelect = useCallback(async (e, mediaType) => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+
+//     // Validate file size
+//     if (file.size > 50 * 1024 * 1024) {
+//       alert("Tệp quá lớn. Kích thước tối đa là 50MB.");
+//       return;
+//     }
+
+//     // Validate file type
+//     if (mediaType === "image" && !file.type.startsWith("image/")) {
+//       alert("Vui lòng chọn tệp hình ảnh.");
+//       return;
+//     }
+
+//     if (mediaType === "video" && !file.type.startsWith("video/")) {
+//       alert("Vui lòng chọn tệp video.");
+//       return;
+//     }
+
+//     // Create preview
+//     const reader = new FileReader();
+//     reader.onload = () => {
+//       const tempMessage = {
+//         id: Date.now() + Math.random(),
+//         type: "sent",
+//         timestamp: new Date(),
+//         uploading: true,
+//         fileName: file.name,
+//       };
+
+//       if (mediaType === "image") {
+//         tempMessage.image = reader.result;
+//       } else if (mediaType === "video") {
+//         tempMessage.video = reader.result;
+//       } else if (mediaType === "file") {
+//         tempMessage.file = {
+//           name: file.name,
+//           url: reader.result,
+//         };
+//       }
+
+//       setMessages((prev) => [...prev, tempMessage]);
+//       uploadFileToServer(file, mediaType, tempMessage.id);
+//     };
+
+//     reader.onerror = () => {
+//       alert("Lỗi khi đọc tệp.");
+//     };
+
+//     reader.readAsDataURL(file);
+    
+//     // Clear input
+//     e.target.value = '';
+//   }, []);
+
+//   // File upload function
+//   const uploadFileToServer = useCallback(async (file, mediaType, messageId) => {
+//     const formData = new FormData();
+//     let endpoint;
+
+//     if (mediaType === "image") {
+//       formData.append("file", file, file.name);
+//       endpoint = "/upload-file";
+//     } else if (mediaType === "video") {
+//       formData.append("video", file, file.name);
+//       endpoint = "/upload-video";
+//     } else if (mediaType === "file") {
+//       formData.append("file", file, file.name);
+//       endpoint = "/upload-file";
+//     }
+
+//     try {
+//       const uploadResponse = await axios.post(`http://localhost:5000${endpoint}`, formData, {
+//         headers: {
+//           "Content-Type": "multipart/form-data",
+//           "Accept": "application/json",
+//         },
+//       });
+
+//       if (uploadResponse.data.url) {
+//         const filePath = uploadResponse.data.url.replace("http://localhost:5000", "");
+
+//         // Update message with server URL
+//         setMessages((prev) =>
+//           prev.map((msg) => {
+//             if (msg.id === messageId) {
+//               const updatedMsg = { ...msg, uploading: false };
+
+//               if (mediaType === "image") {
+//                 updatedMsg.image = uploadResponse.data.url;
+//               } else if (mediaType === "video") {
+//                 updatedMsg.video = uploadResponse.data.url;
+//               } else if (mediaType === "file") {
+//                 updatedMsg.file = {
+//                   name: file.name,
+//                   url: uploadResponse.data.url,
+//                 };
+//               }
+
+//               return updatedMsg;
+//             }
+//             return msg;
+//           })
+//         );
+
+//         // Send message to API
+//         await sendMessageToAPI({
+//           content: file.name,
+//           message_type: mediaType,
+//           url: filePath,
+//         });
+//       }
+//     } catch (uploadError) {
+//       console.error("Upload error:", uploadError);
+
+//       // Mark message as failed
+//       setMessages((prev) =>
+//         prev.map((msg) => {
+//           if (msg.id === messageId) {
+//             return { ...msg, uploading: false, error: true };
+//           }
+//           return msg;
+//         })
+//       );
+
+//       alert("Upload thất bại: " + (uploadError.response?.data?.error || uploadError.message));
+//     }
+//   }, [sendMessageToAPI]);
+
+//   // Friend request handlers
+//   const toggleRequestBar = useCallback(() => {
+//     setShowSendRequestBar((prev) => !prev);
+//   }, []);
+
+//   const handleSendFriendRequest = useCallback((friendId, friendName) => {
+//     console.log(`Gửi lời mời kết bạn tới ID ${friendId}: ${friendName}`);
+//   }, []);
+
+//   const handleConfirmFriendRequest = useCallback((friendId, friendName) => {
+//     console.log(`Xác nhận lời mời kết bạn từ ID ${friendId}: ${friendName}`);
+//   }, []);
+
+//   const handleRejectFriendRequest = useCallback((friendId, friendName) => {
+//     console.log(`Từ chối lời mời kết bạn từ ID ${friendId}: ${friendName}`);
+//   }, []);
+
+//   const handleClosePreview = useCallback(() => {
+//     setPreviewImage(null);
+//   }, []);
+
+//   // URL validation
+//   const isValidUrl = useCallback((url) => {
+//     try {
+//       new URL(url);
+//       return true;
+//     } catch {
+//       return false;
+//     }
+//   }, []);
+
+//   // Message content renderer
+//   const renderMessageContent = useCallback((message) => {
+//     if (message.uploading) {
+//       return (
+//         <div className={cx("message-uploading")}>
+//           <span>Đang tải lên...</span>
+//         </div>
+//       );
+//     }
+
+//     if (message.error) {
+//       return (
+//         <div className={cx("message-error")}>
+//           <span>Lỗi tải lên</span>
+//         </div>
+//       );
+//     }
+
+//     if (message.image) {
+//       return (
+//         <div 
+//           className={cx("message-image")} 
+//           onClick={() => setPreviewImage(message.image)} 
+//           aria-label="Xem trước hình ảnh"
+//         >
+//           <img 
+//             src={message.image} 
+//             alt="Nội dung được chia sẻ" 
+//             style={{ maxWidth: "100%", borderRadius: "8px" }} 
+//             loading="lazy"
+//           />
+//         </div>
+//       );
+//     }
+
+//     if (message.video) {
+//       return (
+//         <div className={cx("message-video")}>
+//           <video controls style={{ maxWidth: "100%", borderRadius: "8px" }}>
+//             <source src={message.video} type="video/mp4" />
+//             Trình duyệt của bạn không hỗ trợ thẻ video.
+//           </video>
+//         </div>
+//       );
+//     }
+
+//     if (message.file) {
+//       return (
+//         <div className={cx("message-file")}>
+//           <a href={message.file.url} download={message.file.name}>
+//             📎 {message.file.name}
+//           </a>
+//         </div>
+//       );
+//     }
+
+//     if (message.text) {
+//       const urlRegex = /(https?:\/\/[^\s]+)/g;
+//       const parts = message.text.split(urlRegex);
+      
+//       return (
+//         <span>
+//           {parts.map((part, index) => {
+//             if (part.match(urlRegex) && isValidUrl(part)) {
+//               return (
+//                 <a
+//                   key={index}
+//                   href={part}
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                   style={{ color: "blue", textDecoration: "underline" }}
+//                 >
+//                   {part}
+//                 </a>
+//               );
+//             }
+//             return part;
+//           })}
+//         </span>
+//       );
+//     }
+
+//     return <span>{message.text || ""}</span>;
+//   }, [isValidUrl]);
+
+//   // Time formatting functions
+//   const formatTime = useCallback((dateObj) => {
+//     return dateObj.toLocaleTimeString([], {
+//       hour: "2-digit",
+//       minute: "2-digit",
+//       hour12: true,
+//     });
+//   }, []);
+
+//   const formatSeparator = useCallback((dateObj) => {
+//     return (
+//       dateObj.toLocaleDateString([], { day: "2-digit", month: "2-digit", year: "numeric" }) +
+//       " " +
+//       formatTime(dateObj)
+//     );
+//   }, [formatTime]);
+
+//   // Empty state
+//   if (!friend) {
+//     return (
+//       <div className={cx("chat")}>
+//         <div className={cx("empty-state")}>
+//           <div className={cx("empty-content")}>
+//             <div className={cx("empty-icon")}>
+//               <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
+//                 <path
+//                   d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
+//                   fill="currentColor"
+//                   opacity="0.3"
+//                 />
+//                 <circle cx="8" cy="12" r="1" fill="currentColor" />
+//                 <circle cx="12" cy="12" r="1" fill="currentColor" />
+//                 <circle cx="16" cy="12" r="1" fill="currentColor" />
+//               </svg>
+//             </div>
+//             <div className={cx("empty-text")}>
+//               <h2>Chọn một cuộc trò chuyện</h2>
+//               <p>Chọn một người bạn từ danh sách bên trái để bắt đầu nhắn tin</p>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className={cx("chat")}>
+//       <ChatHeader 
+//         friend={friend} 
+//         onAvatarClick={handleAvatarClick}
+//         onToggleDetail={onToggleDetail}
+//       />
+
+//       {showSendRequestBar ? (
+//         <FriendRequestBar
+//           friend={friend}
+//           onSendRequest={handleSendFriendRequest}
+//           isVisible={false}
+//         />
+//       ) : (
+//         <FriendRequestConfirmationBar
+//           friend={friend}
+//           onConfirmRequest={handleConfirmFriendRequest}
+//           onRejectRequest={handleRejectFriendRequest}
+//           isVisible={false}
+//         />
+//       )}
+
+//       <div className={cx("center")} ref={messagesContainerRef}>
+//         {loading ? (
+//           <div className={cx("loading")}>
+//             <span>Đang tải tin nhắn...</span>
+//           </div>
+//         ) : error ? (
+//           <div className={cx("error")}>{error}</div>
+//         ) : messages.length === 0 ? (
+//           <div className={cx("no-messages")}>
+//             <p>Chưa có tin nhắn nào. Hãy bắt đầu cuộc trò chuyện!</p>
+//           </div>
+//         ) : (
+//           messages.map((message, index) => {
+//             const prevMsg = messages[index - 1];
+//             const nextMsg = messages[index + 1];
+//             const currentTime = message.timestamp;
+
+//             let showSeparator = false;
+//             let showTime = false;
+
+//             if (!prevMsg) {
+//               showSeparator = true;
+//             } else {
+//               const diffMinutes = (currentTime - prevMsg.timestamp) / 1000 / 60;
+//               if (diffMinutes >= 10) {
+//                 showSeparator = true;
+//               }
+//             }
+
+//             if (!nextMsg) {
+//               showTime = true;
+//             } else {
+//               const sameMinute =
+//                 currentTime.getHours() === nextMsg.timestamp.getHours() &&
+//                 currentTime.getMinutes() === nextMsg.timestamp.getMinutes();
+//               if (!sameMinute) {
+//                 showTime = true;
+//               }
+//             }
+
+//             return (
+//               <div key={message.id}>
+//                 {showSeparator && (
+//                   <div className={cx("time-separator")}>
+//                     <div className={cx("time-separator-content")}>
+//                       {formatSeparator(message.timestamp)}
+//                     </div>
+//                   </div>
+//                 )}
+//                 <div className={cx("message", message.type)}>
+//                   <div
+//                     className={cx("message-bubble", {
+//                       "has-media": message.image || message.video || message.file,
+//                       "uploading": message.uploading,
+//                       "error": message.error,
+//                     })}
+//                   >
+//                     {renderMessageContent(message)}
+//                     {message.text && (message.image || message.video || message.file) && (
+//                       <div className={cx("message-text")}>{message.text}</div>
+//                     )}
+//                   </div>
+//                   {showTime && (
+//                     <div className={cx("message-time")}>{formatTime(message.timestamp)}</div>
+//                   )}
+//                 </div>
+//               </div>
+//             );
+//           })
+//         )}
+//       </div>
+
+//       {previewImage && (
+//         <ChatPreview imageUrl={previewImage} onClose={handleClosePreview} />
+//       )}
+
+//       <div className={cx("media-buttons")}>
+//         <label className={cx("media-button")} title="Chọn ảnh" aria-label="Chọn ảnh để gửi">
+//           <input
+//             type="file"
+//             accept="image/*"
+//             style={{ display: "none" }}
+//             onChange={(e) => handleMediaSelect(e, "image")}
+//           />
+//           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+//             <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+//           </svg>
+//         </label>
+//         <label className={cx("media-button")} title="Chọn file" aria-label="Chọn tệp để gửi">
+//           <input
+//             type="file"
+//             accept=".pdf,.doc,.docx,.txt"
+//             style={{ display: "none" }}
+//             onChange={(e) => handleMediaSelect(e, "file")}
+//           />
+//           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+//             <path d="M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+//           </svg>
+//         </label>
+//         <label className={cx("media-button")} title="Chọn video" aria-label="Chọn video để gửi">
+//           <input
+//             type="file"
+//             accept="video/*"
+//             style={{ display: "none" }}
+//             onChange={(e) => handleMediaSelect(e, "video")}
+//           />
+//           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+//             <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
+//           </svg>
+//         </label>
+//       </div>
+
+//       <div className={cx("input-area")}>
+//         <input
+//           type="text"
+//           placeholder="Nhập tin nhắn..."
+//           value={text}
+//           onChange={(e) => setText(e.target.value)}
+//           onKeyPress={handleKeyPress}
+//           className={cx("message-input")}
+//           aria-label="Nhập tin nhắn"
+//         />
+//         <div className={cx("emoji-container")}>
+//           <button 
+//             className={cx("emoji-button")} 
+//             onClick={() => setOpen((prev) => !prev)}
+//             aria-label="Mở bảng chọn emoji"
+//           >
+//             😊
+//           </button>
+//           {open && (
+//             <div className={cx("emoji-picker")}>
+//               {emojis.map((emoji, index) => (
+//                 <button
+//                   key={index}
+//                   onClick={() => handleEmoji(emoji)}
+//                   className={cx("emoji-item")}
+//                   aria-label={`Chọn emoji ${emoji}`}
+//                 >
+//                   {emoji}
+//                 </button>
+//               ))}
+//             </div>
+//           )}
+//         </div>
+//         <button 
+//           onClick={handleSend} 
+//           className={cx("send-button", { active: text.trim() })}
+//           aria-label={text.trim() ? "Gửi tin nhắn" : "Gửi like"}
+//           disabled={loading}
+//         >
+//           {text.trim() ? (
+//             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+//               <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+//             </svg>
+//           ) : (
+//             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+//               <path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z" />
+//             </svg>
+//           )}
+//         </button>
+//       </div>
+
+//       {open && <div className={cx("overlay")} onClick={() => setOpen(false)} />}
+//       {showProfile && 
+//         <ProFile1 
+//           onClose={() => setShowProfile(false)} 
+//           datax={friend}
+//         />
+//       }
+//     </div>
+//   );
+// }
+
+// export default Chat;
+
+
+
+
+
+
+
+
+
+
+import classNames from "classnames/bind";
+import styles from "./Chat.module.scss";
+import { useState, useEffect, useRef, useCallback } from "react";
+import ProFile1 from "~/pages/ProFile1";
+import ChatPreview from "./ChatPreview";
+import FriendRequestBar from "./FriendRequestBar";
+import FriendRequestConfirmationBar from "./FriendRequestConfirmationBar";
+import ChatHeader from "./ChatHeader";
+import axios from "axios";
+import { io } from "socket.io-client";
+
+const cx = classNames.bind(styles);
+
+function Chat({ friend, onToggleDetail }) {
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
+  const [showProfile, setShowProfile] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const messagesContainerRef = useRef(null);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showSendRequestBar, setShowSendRequestBar] = useState(false);
+  const socketRef = useRef(null);
+
+  // Memoized scroll function
+  const scrollToBottom = useCallback(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, []);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
+
+  // Socket connection setup
+  useEffect(() => {
+    if (friend?.sender) {
+      socketRef.current = io("http://localhost:5000", {
+        query: { userId: friend.sender },
+      });
+
+      socketRef.current.on("receiveMessage", (data) => {
+        console.log("📩 Received message from", data.from, ":", data.message);
+        
+        // Add received message to local state
+        const receivedMessage = {
+          id: Date.now() + Math.random(),
+          text: data.message,
+          type: "received",
+          timestamp: new Date(),
+        };
+        
+        setMessages((prev) => [...prev, receivedMessage]);
+      });
+
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.disconnect();
+        }
+      };
+    }
+  }, [friend?.sender]);
+
+  // Fetch messages from API
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!friend || !friend.id) {
+        setMessages([]);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await axios.post("http://localhost:5000/api/chat/messages/", {
+          friendId: friend.id,
+        });
+
+        if (response.status === 200 && Array.isArray(response.data)) {
+          const transformedMessages = response.data
+            .map((msg) => ({
+              id: msg.id,
+              text: msg.message_type === "text" ? msg.content : null,
+              type: msg.sender !== friend.member ? "sent" : "received",
+              timestamp: new Date(msg.timestamp),
+              image: msg.message_type === "image" ? `http://localhost:5000${msg.url}` : null,
+              video: msg.message_type === "video" ? `http://localhost:5000${msg.url}` : null,
+              file: msg.message_type === "file" 
+                ? { name: msg.content, url: `http://localhost:5000${msg.url}` } 
+                : null,
+            }))
+            .filter((msg) => msg.text || msg.image || msg.video || msg.file);
+
+          setMessages(transformedMessages);
+        } else {
+          setError("Dữ liệu tin nhắn không hợp lệ.");
+        }
+      } catch (err) {
+        setError("Lỗi khi tải tin nhắn: " + (err.response?.data?.message || err.message));
+        console.error("Error fetching messages:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMessages();
+  }, [friend]);
+
+  const emojis = ["😀", "😂", "😍", "😊", "😎", "🤔", "👍", "❤️", "🎉", "🔥", "💯", "✨"];
+
+  const handleEmoji = useCallback((emoji) => {
+    setText((prev) => prev + emoji);
+    setOpen(false);
+  }, []);
+
+  const sendMessageToAPI = useCallback(async (messageData) => {
+    try {
+      await axios.post("http://localhost:5000/api/chat/send-message/", {
+        id: "",
+        conversationId: friend.id,
+        sender: friend.sender,
+        content: messageData.content,
+        message_type: messageData.message_type,
+        timestamp: new Date().toISOString(),
+        recipient: friend.member,
+        url: messageData.url || "",
+      });
+    } catch (error) {
+      console.error("Error sending message to API:", error);
+      throw error;
+    }
+  }, [friend]);
+
+  const handleSend = useCallback(async () => {
+    const messageContent = text.trim() || "👍";
+    
+    const newMessage = {
+      id: Date.now(),
+      text: messageContent,
+      type: "sent",
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, newMessage]);
+    setText("");
+
+    // Send via socket
+    if (socketRef.current) {
+      socketRef.current.emit("sendMessage", {
+        toUserId: friend.member,
+        message: messageContent,
+      });
+    }
+
+    // Send to API
+    try {
+      await sendMessageToAPI({
+        content: messageContent,
+        message_type: "text",
+      });
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      // Optionally show error to user or retry
+    }
+  }, [text, friend, sendMessageToAPI]);
+
+  const handleKeyPress = useCallback((e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  }, [handleSend]);
+
+  const handleAvatarClick = useCallback(() => {
+    setShowProfile(true);
+  }, []);
+
+  // Media selection handler
+  const handleMediaSelect = useCallback(async (e, mediaType) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file size
+    if (file.size > 50 * 1024 * 1024) {
+      alert("Tệp quá lớn. Kích thước tối đa là 50MB.");
+      return;
+    }
+
+    // Validate file type
+    if (mediaType === "image" && !file.type.startsWith("image/")) {
+      alert("Vui lòng chọn tệp hình ảnh.");
+      return;
+    }
+
+    if (mediaType === "video" && !file.type.startsWith("video/")) {
+      alert("Vui lòng chọn tệp video.");
+      return;
+    }
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = () => {
+      const tempMessage = {
+        id: Date.now() + Math.random(),
+        type: "sent",
+        timestamp: new Date(),
+        uploading: true,
+        fileName: file.name,
+      };
+
+      if (mediaType === "image") {
+        tempMessage.image = reader.result;
+      } else if (mediaType === "video") {
+        tempMessage.video = reader.result;
+      } else if (mediaType === "file") {
+        tempMessage.file = {
+          name: file.name,
+          url: reader.result,
+        };
+      }
+
+      setMessages((prev) => [...prev, tempMessage]);
+      uploadFileToServer(file, mediaType, tempMessage.id);
+    };
+
+    reader.onerror = () => {
+      alert("Lỗi khi đọc tệp.");
+    };
+
+    reader.readAsDataURL(file);
+    
+    // Clear input
+    e.target.value = '';
+  }, []);
+
+  // File upload function
+  const uploadFileToServer = useCallback(async (file, mediaType, messageId) => {
+    const formData = new FormData();
+    let endpoint;
+
+    if (mediaType === "image") {
+      formData.append("file", file, file.name);
+      endpoint = "/upload-file";
+    } else if (mediaType === "video") {
+      formData.append("video", file, file.name);
+      endpoint = "/upload-video";
+    } else if (mediaType === "file") {
+      formData.append("file", file, file.name);
+      endpoint = "/upload-file";
+    }
+
+    try {
+      const uploadResponse = await axios.post(`http://localhost:5000${endpoint}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "Accept": "application/json",
+        },
+      });
+
+      if (uploadResponse.data.url) {
+        const filePath = uploadResponse.data.url.replace("http://localhost:5000", "");
+
+        // Update message with server URL
+        setMessages((prev) =>
+          prev.map((msg) => {
+            if (msg.id === messageId) {
+              const updatedMsg = { ...msg, uploading: false };
+
+              if (mediaType === "image") {
+                updatedMsg.image = uploadResponse.data.url;
+              } else if (mediaType === "video") {
+                updatedMsg.video = uploadResponse.data.url;
+              } else if (mediaType === "file") {
+                updatedMsg.file = {
+                  name: file.name,
+                  url: uploadResponse.data.url,
+                };
+              }
+
+              return updatedMsg;
+            }
+            return msg;
+          })
+        );
+
+        // Send message to API
+        await sendMessageToAPI({
+          content: file.name,
+          message_type: mediaType,
+          url: filePath,
+        });
+      }
+    } catch (uploadError) {
+      console.error("Upload error:", uploadError);
+
+      // Mark message as failed
+      setMessages((prev) =>
+        prev.map((msg) => {
+          if (msg.id === messageId) {
+            return { ...msg, uploading: false, error: true };
+          }
+          return msg;
+        })
+      );
+
+      alert("Upload thất bại: " + (uploadError.response?.data?.error || uploadError.message));
+    }
+  }, [sendMessageToAPI]);
+
+  // Friend request handlers
+  const toggleRequestBar = useCallback(() => {
+    setShowSendRequestBar((prev) => !prev);
+  }, []);
+
+  const handleSendFriendRequest = useCallback((friendId, friendName) => {
+    console.log(`Gửi lời mời kết bạn tới ID ${friendId}: ${friendName}`);
+  }, []);
+
+  const handleConfirmFriendRequest = useCallback((friendId, friendName) => {
+    console.log(`Xác nhận lời mời kết bạn từ ID ${friendId}: ${friendName}`);
+  }, []);
+
+  const handleRejectFriendRequest = useCallback((friendId, friendName) => {
+    console.log(`Từ chối lời mời kết bạn từ ID ${friendId}: ${friendName}`);
+  }, []);
+
+  const handleClosePreview = useCallback(() => {
+    setPreviewImage(null);
+  }, []);
+
+  // URL validation
+  const isValidUrl = useCallback((url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  // Message content renderer
+  const renderMessageContent = useCallback((message) => {
+    if (message.uploading) {
+      return (
+        <div className={cx("message-uploading")}>
+          <span>Đang tải lên...</span>
+        </div>
+      );
+    }
+
+    if (message.error) {
+      return (
+        <div className={cx("message-error")}>
+          <span>Lỗi tải lên</span>
+        </div>
+      );
+    }
+
+    if (message.image) {
+      return (
+        <div 
+          className={cx("message-image")} 
+          onClick={() => setPreviewImage(message.image)} 
+          aria-label="Xem trước hình ảnh"
+        >
+          <img 
+            src={message.image} 
+            alt="Nội dung được chia sẻ" 
+            style={{ maxWidth: "100%", borderRadius: "8px" }} 
+            loading="lazy"
+          />
+        </div>
+      );
+    }
+
+    if (message.video) {
+      return (
+        <div className={cx("message-video")}>
+          <video controls style={{ maxWidth: "100%", borderRadius: "8px" }}>
+            <source src={message.video} type="video/mp4" />
+            Trình duyệt của bạn không hỗ trợ thẻ video.
+          </video>
+        </div>
+      );
+    }
+
+    if (message.file) {
+      return (
+        <div className={cx("message-file")}>
+          <a href={message.file.url} download={message.file.name}>
+            📎 {message.file.name}
+          </a>
+        </div>
+      );
+    }
+
+    if (message.text) {
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      const parts = message.text.split(urlRegex);
+      
+      return (
+        <span>
+          {parts.map((part, index) => {
+            if (part.match(urlRegex) && isValidUrl(part)) {
+              return (
+                <a
+                  key={index}
+                  href={part}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "blue", textDecoration: "underline" }}
+                >
+                  {part}
+                </a>
+              );
+            }
+            return part;
+          })}
+        </span>
+      );
+    }
+
+    return <span>{message.text || ""}</span>;
+  }, [isValidUrl]);
+
+  // Time formatting functions
+  const formatTime = useCallback((dateObj) => {
+    return dateObj.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }, []);
+
+  const formatSeparator = useCallback((dateObj) => {
+    return (
+      dateObj.toLocaleDateString([], { day: "2-digit", month: "2-digit", year: "numeric" }) +
+      " " +
+      formatTime(dateObj)
+    );
+  }, [formatTime]);
+
+  // Empty state
+  if (!friend) {
+    return (
+      <div className={cx("chat")}>
+        <div className={cx("empty-state")}>
+          <div className={cx("empty-content")}>
+            <div className={cx("empty-icon")}>
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
+                  fill="currentColor"
+                  opacity="0.3"
+                />
+                <circle cx="8" cy="12" r="1" fill="currentColor" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" />
+                <circle cx="16" cy="12" r="1" fill="currentColor" />
+              </svg>
+            </div>
+            <div className={cx("empty-text")}>
+              <h2>Chọn một cuộc trò chuyện</h2>
+              <p>Chọn một người bạn từ danh sách bên trái để bắt đầu nhắn tin</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={cx("chat")}>
+      <ChatHeader 
+        friend={friend} 
+        onAvatarClick={handleAvatarClick}
+        onToggleDetail={onToggleDetail}
+      />
+
+      {showSendRequestBar ? (
+        <FriendRequestBar
+          friend={friend}
+          onSendRequest={handleSendFriendRequest}
+          isVisible={false}
+        />
+      ) : (
+        <FriendRequestConfirmationBar
+          friend={friend}
+          onConfirmRequest={handleConfirmFriendRequest}
+          onRejectRequest={handleRejectFriendRequest}
+          isVisible={false}
+        />
+      )}
+
+      <div className={cx("center")} ref={messagesContainerRef}>
+        {loading ? (
+          <div className={cx("loading")}>
+            <span>Đang tải tin nhắn...</span>
+          </div>
+        ) : error ? (
+          <div className={cx("error")}>{error}</div>
+        ) : messages.length === 0 ? (
+          <div className={cx("no-messages")}>
+            <p>Chưa có tin nhắn nào. Hãy bắt đầu cuộc trò chuyện!</p>
+          </div>
+        ) : (
+          messages.map((message, index) => {
+            const prevMsg = messages[index - 1];
+            const nextMsg = messages[index + 1];
+            const currentTime = message.timestamp;
+
+            let showSeparator = false;
+            let showTime = false;
+
+            if (!prevMsg) {
+              showSeparator = true;
+            } else {
+              const diffMinutes = (currentTime - prevMsg.timestamp) / 1000 / 60;
+              if (diffMinutes >= 10) {
+                showSeparator = true;
+              }
+            }
+
+            if (!nextMsg) {
+              showTime = true;
+            } else {
+              const sameMinute =
+                currentTime.getHours() === nextMsg.timestamp.getHours() &&
+                currentTime.getMinutes() === nextMsg.timestamp.getMinutes();
+              if (!sameMinute) {
+                showTime = true;
+              }
+            }
+
+            return (
+              <div key={message.id}>
+                {showSeparator && (
+                  <div className={cx("time-separator")}>
+                    <div className={cx("time-separator-content")}>
+                      {formatSeparator(message.timestamp)}
+                    </div>
+                  </div>
+                )}
+                <div className={cx("message", message.type)}>
+                  <div
+                    className={cx("message-bubble", {
+                      "has-media": message.image || message.video || message.file,
+                      "uploading": message.uploading,
+                      "error": message.error,
+                    })}
+                  >
+                    {renderMessageContent(message)}
+                    {message.text && (message.image || message.video || message.file) && (
+                      <div className={cx("message-text")}>{message.text}</div>
+                    )}
+                  </div>
+                  {showTime && (
+                    <div className={cx("message-time")}>{formatTime(message.timestamp)}</div>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {previewImage && (
+        <ChatPreview imageUrl={previewImage} onClose={handleClosePreview} />
+      )}
+
+      <div className={cx("media-buttons")}>
+        <label className={cx("media-button")} title="Chọn ảnh" aria-label="Chọn ảnh để gửi">
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={(e) => handleMediaSelect(e, "image")}
+          />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+          </svg>
+        </label>
+        <label className={cx("media-button")} title="Chọn file" aria-label="Chọn tệp để gửi">
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx,.txt"
+            style={{ display: "none" }}
+            onChange={(e) => handleMediaSelect(e, "file")}
+          />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+          </svg>
+        </label>
+        <label className={cx("media-button")} title="Chọn video" aria-label="Chọn video để gửi">
+          <input
+            type="file"
+            accept="video/*"
+            style={{ display: "none" }}
+            onChange={(e) => handleMediaSelect(e, "video")}
+          />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
+          </svg>
+        </label>
+      </div>
+
+      <div className={cx("input-area")}>
+        <input
+          type="text"
+          placeholder="Nhập tin nhắn..."
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyPress={handleKeyPress}
+          className={cx("message-input")}
+          aria-label="Nhập tin nhắn"
+        />
+        <div className={cx("emoji-container")}>
+          <button 
+            className={cx("emoji-button")} 
+            onClick={() => setOpen((prev) => !prev)}
+            aria-label="Mở bảng chọn emoji"
+          >
+            😊
+          </button>
+          {open && (
+            <div className={cx("emoji-picker")}>
+              {emojis.map((emoji, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleEmoji(emoji)}
+                  className={cx("emoji-item")}
+                  aria-label={`Chọn emoji ${emoji}`}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        <button 
+          onClick={handleSend} 
+          className={cx("send-button", { active: text.trim() })}
+          aria-label={text.trim() ? "Gửi tin nhắn" : "Gửi like"}
+          disabled={loading}
+        >
+          {text.trim() ? (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z" />
+            </svg>
+          )}
+        </button>
+      </div>
+
+      {open && <div className={cx("overlay")} onClick={() => setOpen(false)} />}
+      {showProfile && 
+        <ProFile1 
+          onClose={() => setShowProfile(false)} 
+          datax={friend}
+        />
+      }
+    </div>
+  );
+}
+
+export default Chat;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
