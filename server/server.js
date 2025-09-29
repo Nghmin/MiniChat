@@ -95,6 +95,12 @@ io.on("connection", (socket) => {
     console.log(`🔗 ${userId} <-> ${socket.id}`);
   }
 
+  socket.on("video-offer", ({ toUserId, offer }) => {
+  const targetSocket = userSockets.get(toUserId);
+  if (targetSocket) {
+    targetSocket.emit("video-offer", { from: userId, offer });
+  }
+});
   // Nhận tin nhắn từ client A và gửi cho client B
   socket.on("sendMessage", ({ toUserId, message }) => {
     console.log(`📨 ${userId} -> ${toUserId}: ${message}`);
@@ -114,7 +120,32 @@ io.on("connection", (socket) => {
     userSockets.delete(userId);
     console.log("❌ Client ngắt:", userId);
   });
+  // Nhận phản hồi từ người nhận cuộc gọi
+socket.on("video-answer", ({ toUserId, answer }) => {
+  const targetSocket = userSockets.get(toUserId);
+  if (targetSocket) {
+    targetSocket.emit("video-answer", { from: userId, answer });
+  }
 });
+
+// Nhận ICE candidate để thiết lập kết nối P2P
+socket.on("ice-candidate", ({ toUserId, candidate }) => {
+  const targetSocket = userSockets.get(toUserId);
+  if (targetSocket) {
+    targetSocket.emit("ice-candidate", { from: userId, candidate });
+  }
+});
+
+// (Tuỳ chọn) Kết thúc cuộc gọi
+socket.on("end-call", ({ toUserId }) => {
+  const targetSocket = userSockets.get(toUserId);
+  if (targetSocket) {
+    targetSocket.emit("end-call", { from: userId });
+  }
+});
+
+});
+
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
