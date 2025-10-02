@@ -1154,11 +1154,12 @@ import FriendRequestBar from "./FriendRequestBar";
 import FriendRequestConfirmationBar from "./FriendRequestConfirmationBar";
 import ChatInput from "./ChatInput/ChatInput";
 import ChatHeader from "./ChatHeader";
-import { useVideoCall } from "../../hooks/useVideoCall";
+import useVideoCall from "../../hooks/useVideoCall";
 import VideoCall from "../../components/VideoCall";
 
 
 const cx = classNames.bind(styles);
+const user = JSON.parse(localStorage.getItem("user"));
 
 function Chat({ friend, onToggleDetail, onUpdateChat }) {
   const {
@@ -1180,7 +1181,8 @@ const {
   startCall,
   acceptCall,
   endCall
-} = useVideoCall(currentUser.id, friend.member);
+} = useVideoCall(user.id, friend.id);
+
 
 
   const { socketRef } = useSocketHandler(friend, onUpdateChat, setMessages);

@@ -1,32 +1,48 @@
-import { useEffect, useRef, useState } from "react";
-import { io } from "socket.io-client";
+import { useRef, useState, useEffect } from "react";
+import { socket } from "../socket";
 
-const socket = io("http://localhost:3000");
-
-export function useVideoCall(currentUserId, peerUserId) {
-  const [isCalling, setIsCalling] = useState(false);
-  const [incomingOffer, setIncomingOffer] = useState(null);
+export default function useVideoCall(myId, friendId) {
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerRef = useRef(null);
-  const streamRef = useRef(null);
+  const [isCalling, setIsCalling] = useState(false);
+  const [incomingOffer, setIncomingOffer] = useState(null);
+  const [isRinging, setIsRinging] = useState(false); // 🔔 hiệu ứng chuông
+
+  const createPeerConnection = (targetUserId) => {
+    const peer = new RTCPeerConnection();
+
+    peer.ontrack = (e) => {
+      remoteVideoRef.current.srcObject = e.streams[0];
+    };
+
+    peer.onicecandidate = (e) => {
+      if (e.candidate) {
+        socket.emit("ice-candidate", { toUserId: targetUserId, candidate: e.candidate });
+      }
+    };
+
+    return peer;
+  };
 
   useEffect(() => {
-    socket.emit("register", currentUserId);
-
-    socket.on("incoming-call", ({ from, offer }) => {
-      if (from === peerUserId) {
-        setIncomingOffer(offer);
-        setIsCalling(true);
+    socket.on("video-offer", ({ from, offer }) => {
+      if (from === friendId) {
+        setIncomingOffer({ from, offer });
+        setIsRinging(true); // 🔔 bật chuông
       }
     });
 
-    socket.on("call-accepted", async ({ answer }) => {
-      await peerRef.current.setRemoteDescription(new RTCSessionDescription(answer));
+    socket.on("video-answer", ({ answer }) => {
+      if (peerRef.current) {
+        peerRef.current.setRemoteDescription(new RTCSessionDescription(answer));
+      }
     });
 
     socket.on("ice-candidate", ({ candidate }) => {
-      peerRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+      if (peerRef.current) {
+        peerRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+      }
     });
 
     socket.on("end-call", () => {
@@ -34,55 +50,51 @@ export function useVideoCall(currentUserId, peerUserId) {
     });
 
     return () => {
-      socket.off("incoming-call");
-      socket.off("call-accepted");
+      socket.off("video-offer");
+      socket.off("video-answer");
       socket.off("ice-candidate");
       socket.off("end-call");
     };
-  }, [currentUserId, peerUserId]);
-
-  const initMedia = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    streamRef.current = stream;
-    localVideoRef.current.srcObject = stream;
-
-    const peer = new RTCPeerConnection();
-    stream.getTracks().forEach(track => peer.addTrack(track, stream));
-    peerRef.current = peer;
-
-    peer.ontrack = e => {
-      remoteVideoRef.current.srcObject = e.streams[0];
-    };
-
-    peer.onicecandidate = e => {
-      if (e.candidate) {
-        socket.emit("ice-candidate", { to: peerUserId, candidate: e.candidate });
-      }
-    };
-  };
+  }, [friendId]);
 
   const startCall = async () => {
-    await initMedia();
+    setIsCalling(true);
+    peerRef.current = createPeerConnection(friendId);
+
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    localVideoRef.current.srcObject = stream;
+    stream.getTracks().forEach(track => peerRef.current.addTrack(track, stream));
+
     const offer = await peerRef.current.createOffer();
     await peerRef.current.setLocalDescription(offer);
-    socket.emit("call-user", { to: peerUserId, from: currentUserId, offer });
-    setIsCalling(true);
+
+    socket.emit("video-offer", { toUserId: friendId, offer });
   };
 
   const acceptCall = async () => {
-    await initMedia();
-    await peerRef.current.setRemoteDescription(new RTCSessionDescription(incomingOffer));
+    setIsCalling(true);
+    setIsRinging(false); // 🔕 tắt chuông
+    peerRef.current = createPeerConnection(incomingOffer.from);
+
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    localVideoRef.current.srcObject = stream;
+    stream.getTracks().forEach(track => peerRef.current.addTrack(track, stream));
+
+    await peerRef.current.setRemoteDescription(new RTCSessionDescription(incomingOffer.offer));
     const answer = await peerRef.current.createAnswer();
     await peerRef.current.setLocalDescription(answer);
-    socket.emit("answer-call", { to: peerUserId, answer });
-    setIsCalling(false);
+
+    socket.emit("video-answer", { toUserId: incomingOffer.from, answer });
   };
 
   const endCall = () => {
-    if (peerRef.current) peerRef.current.close();
-    if (streamRef.current) streamRef.current.getTracks().forEach(track => track.stop());
-    socket.emit("end-call", { to: peerUserId });
     setIsCalling(false);
+    setIsRinging(false); // 🔕 tắt chuông
+    socket.emit("end-call", { toUserId: friendId });
+    peerRef.current?.close();
+    peerRef.current = null;
+    localVideoRef.current.srcObject = null;
+    remoteVideoRef.current.srcObject = null;
   };
 
   return {
@@ -90,8 +102,9 @@ export function useVideoCall(currentUserId, peerUserId) {
     remoteVideoRef,
     isCalling,
     incomingOffer,
+    isRinging,
     startCall,
     acceptCall,
-    endCall,
+    endCall
   };
 }
