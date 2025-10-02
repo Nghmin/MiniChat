@@ -1,6 +1,8 @@
 const rawUser = localStorage.getItem("user");
 const user = rawUser ? JSON.parse(rawUser) : null;
 
-export const socket = io("http://localhost:3000", {
-  query: { userId: user?.id || "unknown" }
-});
+export const socket = user
+  ? io("http://localhost:5000", {
+      query: { userId: user.id }
+    })
+  : null;

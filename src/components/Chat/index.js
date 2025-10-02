@@ -1159,7 +1159,14 @@ import VideoCall from "../../components/VideoCall";
 
 
 const cx = classNames.bind(styles);
-const user = JSON.parse(localStorage.getItem("user"));
+const rawUser = localStorage.getItem("user");
+const user = rawUser ? JSON.parse(rawUser) : null;
+
+if (!user || !user.id) {
+  return <Navigate to="/login" />;
+}
+
+
 
 function Chat({ friend, onToggleDetail, onUpdateChat }) {
   const {
