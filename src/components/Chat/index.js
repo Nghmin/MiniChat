@@ -1156,19 +1156,22 @@ import ChatInput from "./ChatInput/ChatInput";
 import ChatHeader from "./ChatHeader";
 import useVideoCall from "../../hooks/useVideoCall";
 import VideoCall from "../../components/VideoCall";
+import React from "react";
+import { Navigate } from "react-router-dom";
 
 
 const cx = classNames.bind(styles);
-const rawUser = localStorage.getItem("user");
-const user = rawUser ? JSON.parse(rawUser) : null;
-
-if (!user || !user.id) {
-  return <Navigate to="/login" />;
-}
-
-
 
 function Chat({ friend, onToggleDetail, onUpdateChat }) {
+  const rawUser = localStorage.getItem("user");
+  const user = rawUser ? JSON.parse(rawUser) : null;
+  
+  if (!user || !user.id) {
+    return <Navigate to="/login" />;
+  }
+if (!user || !user.id || !friend || !friend.id) return null;
+
+
   const {
     messages,
     setMessages,
@@ -1190,7 +1193,15 @@ const {
   endCall
 } = useVideoCall(user.id, friend.id);
 
+  const handleStartCall = (friend) => {
+    if (!friend || !friend.id) {
+      alert("Vui lòng chọn người để gọi.");
+      return;
+    }
 
+    setCallingUser(friend); 
+    startCall(); 
+  };
 
   const { socketRef } = useSocketHandler(friend, onUpdateChat, setMessages);
   const { handleSend, handleMediaSelect } = useChatActions(friend, onUpdateChat, setMessages, socketRef);
@@ -1216,6 +1227,9 @@ const {
   const handleRejectFriendRequest = useCallback((friendId, friendName) => {
     console.log(`Từ chối lời mời kết bạn từ ID ${friendId}: ${friendName}`);
   }, []);
+  const handleToggleDetail = () => {
+  console.log("Toggled chi tiết cuộc trò chuyện");
+  };
 
   const handleClosePreview = useCallback(() => {
     setPreviewImage(null);
@@ -1225,9 +1239,7 @@ const {
     setShowSendRequestBar((prev) => !prev);
   }, []);
 
-  const handleStartCall = (user) => {
-  setCallingUser(user);
-};
+  
   if (!friend) {
     return <EmptyState />;
   }
@@ -1235,10 +1247,11 @@ const {
   return (
     <div className={cx("chat")}>
       <ChatHeader
-          friend={friend}
-          onAvatarClick={handleAvatarClick}
-          onToggleDetail={onToggleDetail}
-          onStartCall={handleStartCall}
+      friend={friend}
+      onAvatarClick={handleAvatarClick}
+      onToggleDetail={handleToggleDetail}
+      onStartCall={handleStartCall}
+
       />
 
       {showSendRequestBar ? (
@@ -1284,7 +1297,7 @@ const {
     onEnd={endCall}
     onAccept={acceptCall}
     incomingOffer={incomingOffer}
-
+    onClose={endCall}
   />
 )}
 

@@ -7,18 +7,32 @@ export default function useVideoCall(myId, friendId) {
   const peerRef = useRef(null);
   const [isCalling, setIsCalling] = useState(false);
   const [incomingOffer, setIncomingOffer] = useState(null);
-  const [isRinging, setIsRinging] = useState(false); // 🔔 hiệu ứng chuông
+  const [isRinging, setIsRinging] = useState(false);
 
   const createPeerConnection = (targetUserId) => {
     const peer = new RTCPeerConnection();
 
     peer.ontrack = (e) => {
-      remoteVideoRef.current.srcObject = e.streams[0];
+      if (remoteVideoRef.current) {
+        remoteVideoRef.current.srcObject = e.streams[0];
+      }
     };
 
     peer.onicecandidate = (e) => {
       if (e.candidate) {
-        socket.emit("ice-candidate", { toUserId: targetUserId, candidate: e.candidate });
+        socket.emit("ice-candidate", {
+          toUserId: targetUserId,
+          candidate: e.candidate,
+        });
+      }
+    };
+
+    peer.onconnectionstatechange = () => {
+      if (
+        peer.connectionState === "disconnected" ||
+        peer.connectionState === "failed"
+      ) {
+        endCall();
       }
     };
 
@@ -29,7 +43,7 @@ export default function useVideoCall(myId, friendId) {
     socket.on("video-offer", ({ from, offer }) => {
       if (from === friendId) {
         setIncomingOffer({ from, offer });
-        setIsRinging(true); // 🔔 bật chuông
+        setIsRinging(true);
       }
     });
 
@@ -61,9 +75,18 @@ export default function useVideoCall(myId, friendId) {
     setIsCalling(true);
     peerRef.current = createPeerConnection(friendId);
 
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    localVideoRef.current.srcObject = stream;
-    stream.getTracks().forEach(track => peerRef.current.addTrack(track, stream));
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = stream;
+    }
+
+    stream.getTracks().forEach((track) =>
+      peerRef.current.addTrack(track, stream)
+    );
 
     const offer = await peerRef.current.createOffer();
     await peerRef.current.setLocalDescription(offer);
@@ -72,15 +95,28 @@ export default function useVideoCall(myId, friendId) {
   };
 
   const acceptCall = async () => {
+    if (!incomingOffer) return;
+
     setIsCalling(true);
-    setIsRinging(false); // 🔕 tắt chuông
+    setIsRinging(false);
     peerRef.current = createPeerConnection(incomingOffer.from);
 
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    localVideoRef.current.srcObject = stream;
-    stream.getTracks().forEach(track => peerRef.current.addTrack(track, stream));
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
 
-    await peerRef.current.setRemoteDescription(new RTCSessionDescription(incomingOffer.offer));
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = stream;
+    }
+
+    stream.getTracks().forEach((track) =>
+      peerRef.current.addTrack(track, stream)
+    );
+
+    await peerRef.current.setRemoteDescription(
+      new RTCSessionDescription(incomingOffer.offer)
+    );
     const answer = await peerRef.current.createAnswer();
     await peerRef.current.setLocalDescription(answer);
 
@@ -89,12 +125,23 @@ export default function useVideoCall(myId, friendId) {
 
   const endCall = () => {
     setIsCalling(false);
-    setIsRinging(false); // 🔕 tắt chuông
+    setIsRinging(false);
     socket.emit("end-call", { toUserId: friendId });
-    peerRef.current?.close();
-    peerRef.current = null;
-    localVideoRef.current.srcObject = null;
-    remoteVideoRef.current.srcObject = null;
+
+    if (peerRef.current) {
+      peerRef.current.close();
+      peerRef.current = null;
+    }
+
+    if (localVideoRef.current?.srcObject) {
+      localVideoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      localVideoRef.current.srcObject = null;
+    }
+
+    if (remoteVideoRef.current?.srcObject) {
+      remoteVideoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      remoteVideoRef.current.srcObject = null;
+    }
   };
 
   return {
@@ -105,6 +152,6 @@ export default function useVideoCall(myId, friendId) {
     isRinging,
     startCall,
     acceptCall,
-    endCall
+    endCall,
   };
 }

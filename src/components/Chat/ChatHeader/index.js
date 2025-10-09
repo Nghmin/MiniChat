@@ -30,7 +30,14 @@ function ChatHeader({ friend, onAvatarClick, onToggleDetail, onStartCall }) {
       </div>
       <div className={cx("actions")}>
         <button className={cx("action-btn")} title="Cuộc gọi thoại" aria-label="Cuộc gọi thoại">📞</button>
-        <button className={cx("action-btn")} title="Video call" aria-label="Video call"onClick={() => onStartCall(friend)}>🎥</button>
+        <button className={cx("action-btn")} title="Video call" aria-label="Video call"onClick={() => {
+  if (!friend || !friend.id) {
+    alert("Vui lòng chọn người để gọi.");
+    return;
+  }
+  onStartCall(friend);
+}}
+>🎥</button>
         <button className={cx("action-btn")} title="Thông tin cuộc trò chuyện" aria-label="Thông tin cuộc trò chuyện">ℹ️</button>
         <button className={cx("action-btn")} title="Tùy chọn khác" onClick={onToggleDetail} aria-label="Tùy chọn khác">⋮</button>
       </div>
